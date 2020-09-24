@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">操作管理</div>
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="operate-table" lay-filter="operate-table"></table>
+                    <script type="text/html" id="operate-toolbar">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-sm" lay-event="add-toolbar">
+                                <i class="layui-icon">&#xe654;</i>添加
+                            </button>
+                            <button class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit-toolbar">
+                                <i class="layui-icon">&#xe642;</i>编辑
+                            </button>
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del-toolbar">
+                                <i class="layui-icon">&#xe640;</i>删除
+                            </button>
+                            <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="refresh-toolbar">
+                                <i class="layui-icon">&#xe669;</i>刷新
+                            </button>
+                        </div>
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="fold-toolbar">
+                                <i class="layui-icon">&#xe66b;</i>折叠
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-event="expand-toolbar">
+                                <i class="layui-icon">&#xe668;</i>展开
+                            </button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="operate-tool">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit-tool">
+                                <i class="layui-icon">&#xe642;</i>编辑
+                            </button>
+                            <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del-tool">
+                                <i class="layui-icon">&#xe640;</i>删除
+                            </button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="method-tpl">
+                        {{# if(d.method === 'GET'){ }}
+                        <span class="layui-badge layui-bg-orange">{{ d.method }}</span>
+                        {{# }else if(d.method === 'POST'){ }}
+                        <span class="layui-badge layui-bg-green">{{ d.method }}</span>
+                        {{# }else if(d.method === 'PUT'){ }}
+                        <span class="layui-badge layui-bg-blue">{{ d.method }}</span>
+                        {{# }else if(d.method === 'DELETE'){ }}
+                        <span class="layui-badge">{{ d.method }}</span>
+                        {{# }else{ }}
+                        <span class="layui-badge-rim">{{ d.method }}未知</span>
+                        {{# } }}
+                    </script>
+                    <script type="text/html" id="attr-tpl">
+                        {{# if(d.attrId === 1){ }}
+                        <span class="layui-badge layui-bg-green">{{ d.attrExplain }}</span>
+                        {{# }else if(d.attrId === 2){ }}
+                        <span class="layui-badge layui-bg-blue">{{ d.attrExplain }}</span>
+                        {{# }else{ }}
+                        <span class="layui-badge-rim">{{ d.attrExplain }}</span>
+                        {{# } }}
+                    </script>
+                    <script type="text/html" id="status-tpl">
+                        {{# if(d.statusId === 1){ }}
+                        <span class="layui-badge-rim">{{ d.statusExplain }}</span>
+                        {{# }else if(d.statusId === 2){ }}
+                        <span class="layui-badge layui-bg-gray">{{ d.statusExplain }}</span>
+                        {{# }else{ }}
+                        <span class="layui-badge-rim">{{ d.statusExplain }}</span>
+                        {{# } }}
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 操作编辑 -->
+<form class="layui-form" id="operate-form" lay-filter="operate-form" style="padding: 15px;display: none;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级操作</label>
+        <div class="layui-input-block">
+            <input type="hidden" id="id" name="id" class="layui-input">
+            <select id="parentId" name="parentId" lay-verify="required"></select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">操作标题</label>
+        <div class="layui-input-block">
+            <input type="text" id="title" name="title" lay-verify="required" placeholder="请输入操作标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">操作属性</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select id="attrId" name="attrId" lay-verify="required"></select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">操作状态</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select id="statusId" name="statusId" lay-verify="required"></select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            <i class="layui-icon layui-icon-tips" lay-tips="1、&nbsp;?&nbsp;匹配一个字符<br>2、&nbsp;*&nbsp;匹配0个或多个字符<br>3、**&nbsp;匹配0个或多个目录"></i>
+            操作地址
+        </label>
+        <div class="layui-input-block">
+            <input type="text" id="address" name="address" lay-verify="" placeholder="请输入操作地址" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">请求方法</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <select id="method" name="method" lay-verify=""></select>
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">操作排序</label>
+            <div class="layui-input-inline" style="width: 100px;">
+                <input type="number" id="orderId" name="orderId" value="0" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">
+            <i id="iconClsClear" class="" lay-tips="点击清空图标"></i>
+            操作图标
+        </label>
+        <div class="layui-input-block">
+            <input type="text" id="iconCls" name="iconCls" readonly lay-verify="" placeholder="请选择操作图标" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="operate-submit" id="operate-submit" value="确认">
+    </div>
+</form>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script th:src="@{/views/admin/master/js/operate.js}"></script>
+</body>
+</html>
+
+

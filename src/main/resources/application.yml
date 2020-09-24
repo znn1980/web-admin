@@ -1,0 +1,63 @@
+config: #自定义平台配置
+  platform:
+    title: 河北三川创视管理平台
+    version: v0.0.1
+    url: http://www.ifacebox.com
+    copyright: © 2020 三川创视传媒（北京）有限公司 版权所有
+
+server:
+  port: 8088
+  servlet:
+    context-path:
+  tomcat:
+    uri-encoding: UTF-8
+  ssl:
+    enabled: false #是否启用https
+    key-store: classpath:keystore.jks #证书文件
+    key-store-password: sanctum@000888 #证书密码
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/adx?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: never #always-始终执行初始化 embedded-初始化内存数据库 never-不执行初始化
+    schema: classpath:schema-all.sql #创建表
+    data: classpath:data-all.sql #添加数据
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/,classpath:/public/
+    chain:
+      strategy:
+        content: #使用MD5作为静态资源的版本号
+          enabled: true
+          paths: /views/**
+  thymeleaf:
+    cache: false
+    mode: HTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  session:
+    #store-type: redis #使用Redis保存Session在分布式集群中使用
+    timeout: 1800
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 12345
+    timeout: 3000
+    database: 0
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+logging:
+  level:
+    com.ifacebox.web: info
+  file:
+    path: /
+    name: logs/web-admin.log

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body class="layui-layout-body">
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <!-- 头部区域 -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                        <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="theme">
+                        <i class="layui-icon layui-icon-theme"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="note">
+                        <i class="layui-icon layui-icon-note"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="fullscreen">
+                        <i class="layui-icon layui-icon-screen-full"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;">
+                        <!--i class="layui-icon layui-icon-username"></i-->
+                        <img id="edit-avatar" th:src="@{/views/admin/img/logo_32x32.png}" class="layui-nav-img" lay-tips="点击修改头像">
+                        <cite th:text="${session.admin_session.username}+'（'+${session.admin_session.name}+'）'"></cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a id="edit-password">
+                                <i class="layui-icon layui-icon-key"></i>
+                                修改密码
+                            </a>
+                        </dd>
+                        <dd>
+                            <a id="lock-screen">
+                                <i class="layui-icon layui-icon-password"></i>
+                                锁屏
+                            </a>
+                        </dd>
+                        <hr>
+                        <dd>
+                            <a id="logout">
+                                <i class="layui-icon layui-icon-logout"></i>
+                                退出
+                            </a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+                <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+                    <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+            </ul>
+        </div>
+        <!-- 侧边菜单 -->
+        <div class="layui-side layui-side-menu">
+            <div class="layui-side-scroll">
+                <div class="layui-logo" lay-href="../../views/admin/home.html">
+                    <span><img th:src="@{/views/admin/img/logo.png}" width="180"></span>
+                </div>
+                <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                </ul>
+            </div>
+        </div>
+        <!-- 页面标签 -->
+        <div class="layadmin-pagetabs" id="LAY_app_tabs">
+            <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;"></a>
+                        <dl class="layui-nav-child layui-anim-fadein">
+                            <dd layadmin-event="closeThisTabs">
+                                <a href="javascript:;">
+                                    <i class="layui-icon layui-icon-reduce-circle"></i>
+                                    <cite>关闭当前标签页</cite>
+                                </a>
+                            </dd>
+                            <dd layadmin-event="closeOtherTabs">
+                                <a href="javascript:;">
+                                    <i class="layui-icon layui-icon-close"></i>
+                                    <cite>关闭其它标签页</cite>
+                                </a>
+                            </dd>
+                            <dd layadmin-event="closeAllTabs">
+                                <a href="javascript:;">
+                                    <i class="layui-icon layui-icon-close-fill"></i>
+                                    <cite>关闭全部标签页</cite>
+                                </a>
+                            </dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+            <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                    <li lay-id="../../views/admin/home.html" lay-attr="../../views/admin/home.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+                </ul>
+            </div>
+        </div>
+        <!-- 主体内容 -->
+        <div class="layui-body" id="LAY_app_body">
+            <div class="layadmin-tabsbody-item layui-show">
+                <iframe th:src="@{/views/admin/home.html}" frameborder="0" class="layadmin-iframe"></iframe>
+            </div>
+        </div>
+        <!-- 辅助元素，一般用于移动设备下遮罩 -->
+        <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+</div>
+
+<!-- 表单编辑 -->
+<form class="layui-form" id="password-form" lay-filter="password-form" style="display: none;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">原密码</label>
+        <div class="layui-input-block">
+            <input type="password" id="oldPassword" name="oldPassword" lay-verify="required" placeholder="请输入原密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-block">
+            <input type="password" id="password" name="password" lay-verify="required" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认新密码</label>
+        <div class="layui-input-block">
+            <input type="password" id="confirmPassword" name="confirmPassword" lay-verify="required" placeholder="请确认新密码" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="password-submit" id="password-submit" value="确认">
+    </div>
+</form>
+<form class="layui-form" id="lock-form" lay-filter="lock-form" style="display: none;">
+    <div class="layui-form-item">
+        <input type="password" id="lockPassword" name="lockPassword" lay-verify="required" placeholder="请输入登陆密码" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="lock-submit" id="lock-submit" value="确认">
+    </div>
+</form>
+<script th:inline="javascript">
+    const config = {
+        base: new String(/*[[@{/}]]*/)
+        , system: []
+        , platform: {
+            title: [[${platformProperties.title}]]
+            , version: [[${platformProperties.version}]]
+            , url: [[${platformProperties.url}]]
+            , copyright: [[${platformProperties.copyright}]]
+        }
+    };
+    /*[# th:each="system : ${systemProperties}"]*/
+    config.system.push({name: [[${system.name}]], value: [[${system.value}]]});
+    /*[/]*/
+</script>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script th:src="@{/views/admin/js/index.js}"></script>
+<!--即时通讯演示，如果项目不需要去掉即可。-->
+<script th:src="@{/views/admin/js/im.js}"></script>
+</body>
+</html>
+
+

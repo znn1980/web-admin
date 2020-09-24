@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    日志管理
+                    <a id="fieldQuery" href="javascript:;" class="layui-a-tips" style="display: none;">更多查询条件</a>
+                </div>
+                <div class="layui-card-body layui-form">
+                    <div class="layui-form-item layui-form-pane">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="createTime" readonly placeholder="请选择查询日志的日期范围">
+                            </div>
+                        </div>
+                        <!--更多查询条件的例子，没有实际作用，只作为演示使用。-->
+                        <div class="layui-inline" name="fieldBoxQuery" style="display: none;">
+                            <label class="layui-form-label">请求地址</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" placeholder="127.0.0.1">
+                            </div>
+                        </div>
+                        <div class="layui-inline" name="fieldBoxQuery" style="display: none;">
+                            <label class="layui-form-label">操作系统</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" placeholder="Windows">
+                            </div>
+                        </div>
+                        <div class="layui-inline" name="fieldBoxQuery" style="display: none;">
+                            <label class="layui-form-label">操作状态</label>
+                            <div class="layui-input-inline">
+                                <select></select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button id="query-field" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-primary">
+                                <i class="layui-icon">&#xe615;</i>查询
+                            </button>
+                        </div>
+                    </div>
+                    <table class="layui-hide" id="logger-table" lay-filter="logger-table"></table>
+                    <script type="text/html" id="logger-toolbar">
+                        <div class="layui-btn-group">
+                            <!--button class="layui-btn layui-btn-sm" lay-event="query-toolbar">
+                                <i class="layui-icon">&#xe615;</i>查询
+                            </button-->
+                            <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del-toolbar">
+                                <i class="layui-icon">&#xe640;</i>批量删除
+                            </button>
+                            <button class="layui-btn layui-btn-warm layui-btn-sm" lay-event="refresh-toolbar">
+                                <i class="layui-icon">&#xe669;</i>刷新
+                            </button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="logger-tool">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del-tool">
+                                <i class="layui-icon">&#xe640;</i>删除
+                            </button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="millis-tpl">
+                        <span class="layui-badge layui-bg-orange">{{ d.costMillis/1000 }}</span>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script th:src="@{/views/admin/js/logger.js}"></script>
+</body>
+</html>
+
+

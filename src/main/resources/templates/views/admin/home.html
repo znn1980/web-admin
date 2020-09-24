@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" th:href="@{/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/layuiadmin/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/layuiadmin/style/admin.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid" id="component-tabs">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    实时监控
+                    <div class="layui-btn-group layuiadmin-btn-group">
+                        <a href="javascript:;" id="onMonitor" class="layui-btn layui-btn-xs">开启</a>
+                        <a href="javascript:;" id="offMonitor" class="layui-btn layui-btn-danger layui-btn-xs">关闭</a>
+                    </div>
+                </div>
+                <div class="layui-card-body">
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-icon layui-icon-chart layui-this"></li>
+                            <li class="layui-icon layui-icon-slider"></li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div id="osChart" style="width: 100%;height: 350px;"></div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div id="osCpu" class="layuiadmin-card-list">
+                                    <p class="layuiadmin-normal-font">
+                                        CPU占用率<span id="osCpuRate">0.00</span>%
+                                        <span id="osCpuWarn" class="layui-badge">告警</span>
+                                    </p>
+                                    <span></span>
+                                    <div class="layui-progress" lay-filter="osCpu">
+                                        <div id="osCpuProgress" class="layui-progress-bar" lay-percent="0%"></div>
+                                    </div>
+                                </div>
+                                <div id="osMemory" class="layuiadmin-card-list">
+                                    <p class="layuiadmin-normal-font">
+                                        内存占用率<span id="osMemoryRate">0.00</span>%
+                                        <span id="osMemoryWarn" class="layui-badge">告警</span>
+                                    </p>
+                                    <span>内存总量<span id="osMemoryTotal">0.00</span>MB 空闲内存<span id="osMemoryFree">0.00</span>MB</span>
+                                    <div class="layui-progress" lay-filter="osMemory">
+                                        <div id="osMemoryProgress" class="layui-progress-bar" lay-percent="0%"></div>
+                                    </div>
+                                </div>
+                                <div id="jvmMemory" class="layuiadmin-card-list">
+                                    <p class="layuiadmin-normal-font">
+                                        Jvm内存占用率<span id="jvmMemoryRate">0.00</span>%
+                                        <span id="jvmMemoryWarn" class="layui-badge">告警</span>
+                                    </p>
+                                    <span>内存总量<span id="jvmMemoryTotal">0.00</span>MB 空闲内存<span id="jvmMemoryFree">0.00</span>MB 最大内存<span id="jvmMemoryMax">0.00</span>MB</span>
+                                    <div class="layui-progress" lay-filter="jvmMemory">
+                                        <div id="jvmMemoryProgress" class="layui-progress-bar" lay-percent="0%"></div>
+                                    </div>
+                                </div>
+                                <div id="osDiskSpace" class="layuiadmin-card-list">
+                                    <p class="layuiadmin-normal-font">
+                                        磁盘<span id="osDiskSpaceName"></span>占用率<span id="osDiskSpaceRate">0.00</span>%
+                                        <span id="osDiskSpaceWarn" class="layui-badge">告警</span>
+                                    </p>
+                                    <span>
+                                        空间总量<span id="osDiskSpaceTotal">0.00</span>GB 可以空间<span id="osDiskSpaceFree">0.00</span>GB
+                                        <span id="osDiskSpaceOpen" class='layui-edge layui-edge-bottom' lay-tips='更多' lay-offset='-15'></span>
+                                    </span>
+                                    <div class="layui-progress" lay-filter="osDiskSpace">
+                                        <div id="osDiskSpaceProgress" class="layui-progress-bar" lay-percent="0%"></div>
+                                    </div>
+                                </div>
+                                <div id="osDiskSpaceList" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script th:src="@{/echarts/echarts.min.js}"></script>
+<script th:src="@{/views/admin/js/home.js}"></script>
+</body>
+</html>
+
+

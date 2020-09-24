@@ -1,0 +1,28 @@
+<div class="layui-card-header">版本信息</div>
+<div class="layui-card-body layui-text layadmin-about">
+    <script type="text/html" template>
+        <table class="layui-table" lay-size="sm">
+            <thead>
+            <tr>
+                <th width="90">名称</th>
+                <th>属性</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{# layui.each(config.system, function(index, item){ }}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.value }}</td>
+            </tr>
+            {{# }); }}
+            </tbody>
+        </table>
+    </script>
+</div>
+
+<div class="layui-card-header">关于版权</div>
+<div class="layui-card-body layui-text layadmin-about">
+    <script type="text/html" template>
+        <p><a href="{{ config.platform.url }}">{{ config.platform.copyright }}</a></p>
+    </script>
+</div>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../city-picker/css/city-picker.css" media="all">
+    <style>
+        body,
+        html,
+        #all-map {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            position: absolute;
+        }
+
+        #search-map {
+            top: 10px;
+            left: 10px;
+            width: 360px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div id="all-map"></div>
+<div id="search-map">
+    <div class="layui-card">
+        <div id="search-header" class="layui-card-header layui-icon layui-icon-triangle-r">
+            <a id="toggle" href="javascript:;">坐标拾取器</a>
+            <i id="change" class="layui-icon layui-icon-location" lay-tips="更换城市" lay-offset="5"></i>
+        </div>
+        <div id="search-body" class="layui-card-body layui-form">
+            <div class="layui-form-item">
+                <div style="position: relative;">
+                    <input id="city" name="city" class="layui-input" data-toggle="city-picker" data-level="city" placeholder="请选择省/市/区"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <input id="keyword" name="keyword" class="layui-input" placeholder="请输入关键字进行搜索"/>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <input id="point" name="point" class="layui-input" placeholder="当前坐标点"/>
+                </div>
+                <div class="layui-inline">
+                    <input id="geo" name="geo" type="checkbox" title="坐标反查">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button id="search" class="layui-btn layui-btn-fluid">搜索</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../layuiadmin/layui/layui.js"></script>
+<script src="../city-picker/js/city-picker.data.js"></script>
+<script src="../city-picker/js/city-picker.js"></script>
+<script src="https://api.map.baidu.com/api?v=3.0&ak=F4397f39c2f8356477d143612f1903da"></script>
+<script>
+    layui.config({
+        base: '../layuiadmin/'
+    }).extend({
+        index: 'lib/index'
+    }).use(['index', 'form', 'laypage'], function () {
+        const $ = layui.$;
+        const layer = layui.layer;
+        const admin = layui.admin;
+        const laypage = layui.laypage;
+        const map = {
+            loading: null
+            , zoom: 12
+            , open: function () {
+                admin.popupRight({
+                    id: 'search-open'
+                    , success: function () {
+                        $('#' + this.id).html(map.results())
+                    }
+                });
+            }
+            , results: function () {
+                const html = [];
+                html.push('<div class="layui-fluid">');
+                html.push('<div class="layui-tab layui-tab-brief caller-tab">');
+                html.push('<ul class="layui-tab-title">');
+                html.push('<li class="layui-this">搜索结果</li>');
+                html.push('</ul>');
+                html.push('</div>');
+                html.push('<div class="caller-contar">');
+                html.push('<div id="result-map"></div>');
+                html.push('<div id="page-map"></div>');
+                html.push('</div>');
+                html.push('</div>');
+                return html.join('');
+            }
+            , result: function (index, result) {
+                const html = [];
+                html.push('<div id="result-map-' + index + '" class="caller-item" style="cursor:pointer;">');
+                html.push('<div class="caller-main caller-fl">');
+                html.push('<p class="caller-adds"><i class="layui-icon layui-icon-location"></i>' + result.title + '</p>');
+                html.push('<p>地址：' + result.address + '</p>');
+                html.push('<p>坐标：' + result.point.lng.toFixed(6) + ',' + result.point.lat.toFixed(6) + '</p>');
+                html.push('</div>');
+                html.push('</div>');
+                html.push('<hr class="layui-bg-gray">');
+                return html.join('');
+            }
+            , city: function (obj) {
+                if (obj) {
+                    $('#city').citypicker('reset');
+                    $('#city').citypicker('destroy');
+                    $('#city').citypicker({
+                        province: obj.province
+                        , city: obj.city
+                    });
+                }
+                let city = $("#city").data('citypicker').getVal();
+                city = city.replace(/\//g, '');
+                console.log(city);
+                return city;
+            }
+            , change: function () {
+                map.loading = layer.load();
+                allMap.centerAndZoom(map.city(), map.zoom);
+                allMapSearch.setLocation(allMap);
+                layer.close(map.loading);
+            }
+            , search: function () {
+                const keyword = $('#keyword').val();
+                map.loading = !keyword || layer.load();
+                allMap.clearOverlays();
+                if ($('#geo').prop('checked')) {
+                    const xy = keyword.split(',');
+                    allMapGeo.getLocation(new BMap.Point(xy[0], xy[1]), function (result) {
+                        if (result) {
+                            map.marker(result);
+                            allMap.panTo(result.point);
+                        }
+                        layer.close(map.loading);
+                    });
+                } else {
+                    allMapSearch.search(keyword);
+                    map.open();
+                }
+            }
+            , list: function (results) {
+                const points = [];
+                $('#result-map').empty();
+                for (let index = 0; index < results.getCurrentNumPois(); index++) {
+                    const result = results.getPoi(index);
+                    points.push(result.point);
+                    map.marker(result);
+                    $('#result-map').append(map.result(index, result));
+                    $('#result-map-' + index).on('click', function () {
+                        map.win(result);
+                        allMap.panTo(result.point);
+                        $('#point').val(result.point.lng + "," + result.point.lat);
+                    });
+                }
+                allMap.setViewport(points);
+            }
+            , marker: function (result) {
+                const marker = new BMap.Marker(result.point, {title: result.title});
+                marker.addEventListener("click", function () {
+                    map.win(result);
+                });
+                allMap.addOverlay(marker);
+            }
+            , win: function (result) {
+                const message = [];
+                message.push('<p>地址：' + result.address + '</p>');
+                message.push('<p>坐标：' + result.point.lng.toFixed(6) + ',' + result.point.lat.toFixed(6) + '</p>');
+                allMap.openInfoWindow(new BMap.InfoWindow(message.join(''), {
+                    title: result.title
+                }), result.point);
+            }
+            , options: {
+                onSearchComplete: function (results) {
+                    allMap.clearOverlays();
+                    if (allMapSearch.getStatus() == BMAP_STATUS_SUCCESS) {
+                        console.log(results);
+                        map.city({
+                            province: results.province
+                            , city: results.city
+                        });
+                        map.list(results);
+                        laypage.render({
+                            elem: 'page-map'
+                            , limit: map.options.pageCapacity
+                            , count: results.getNumPois()
+                            , curr: results.getPageIndex() + 1
+                            , jump: function (obj, first) {
+                                if (!first) {
+                                    map.loading = layer.load();
+                                    allMapSearch.gotoPage(obj.curr - 1);
+                                }
+                            }
+                        });
+                    }
+                    layer.close(map.loading);
+                }
+                , pageCapacity: 10
+            }
+        };
+        map.city({
+            province: '河北省'
+            , city: '石家庄市'
+        });
+        const allMap = new BMap.Map("all-map");
+        const allMapGeo = new BMap.Geocoder();
+        const allMapSearch = new BMap.LocalSearch(allMap, map.options);
+        allMap.centerAndZoom(map.city(), map.zoom);
+        allMap.enableScrollWheelZoom(true);
+        allMap.addEventListener("click", function (e) {
+            $('#point').val(e.point.lng + "," + e.point.lat);
+        });
+        $('#change').on('click', function () {
+            map.change();
+        });
+        $('#search').on('click', function () {
+            map.search();
+        });
+        $('#toggle').on('click', function () {
+            $('#search-body').toggle();
+            $('#search-header').toggleClass('layui-icon-triangle-d');
+            $('#search-header').toggleClass('layui-icon-triangle-r');
+        });
+    });
+</script>
+</body>
+</html>

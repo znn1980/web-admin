@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico"/>
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../city-picker/css/city-picker.css" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-header">省市区选择city-picker</div>
+        <div class="layui-card-body">
+            <div class="layui-form-item">
+                <div style="position: relative;">
+                    <input id="cityPicker" name="cityPicker" class="layui-input" placeholder="请选择省/市/区"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <button class="layui-btn" id="reset">reset</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="destroy">destroy</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getCode">getCode()</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getCodeProvince">getCode(province)</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getCodeCity">getCode(city)</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getCodeDistrict">getCode(district)</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getText">getText()</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="getVal">getVal()</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="setCode">setCode</button>
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" id="setVal">setVal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../layuiadmin/layui/layui.js"></script>
+<script src="../city-picker/js/city-picker.data.js"></script>
+<script src="../city-picker/js/city-picker.js"></script>
+<script>
+    layui.config({
+        base: '../layuiadmin/'
+    }).extend({
+        index: 'lib/index'
+    }).use(['index'], function () {
+        const $ = layui.$;
+        const cityPicker = $("#cityPicker");
+        cityPicker.citypicker();
+        $('#reset').on('click', function () {
+            cityPicker.citypicker('reset');
+        });
+        $('#destroy').on('click', function () {
+            cityPicker.citypicker('destroy');
+        });
+        $('#getCode').on('click', function () {
+            alert(cityPicker.data('citypicker').getCode());
+        });
+        $('#getCodeProvince').on('click', function () {
+            alert(cityPicker.data('citypicker').getCode('province'));
+        });
+        $('#getCodeCity').on('click', function () {
+            alert(cityPicker.data('citypicker').getCode('city'));
+        });
+        $('#getCodeDistrict').on('click', function () {
+            alert(cityPicker.data('citypicker').getCode('district'));
+        });
+        $('#getText').on('click', function () {
+            alert(cityPicker.data('citypicker').getText());
+        });
+        $('#getVal').on('click', function () {
+            alert(cityPicker.data('citypicker').getVal());
+        });
+        $('#setCode').on('click', function () {
+            const address = $.fn.citypicker.getAddressbyCodeId('130000').split('/');
+            let province = address[0];
+            let city = address[1];
+            let district = address[2];
+            alert(province + '/' + city + '/' + district);
+            cityPicker.citypicker('reset');
+            cityPicker.citypicker('destroy');
+            cityPicker.citypicker({
+                province: province
+                , city: city
+                , district: district
+            });
+        });
+        $('#setVal').on('click', function () {
+            cityPicker.citypicker('reset');
+            cityPicker.citypicker('destroy');
+            cityPicker.citypicker({
+                province: '河北省'
+                , city: '石家庄市'
+                , district: '桥西区'
+            });
+        });
+    });
+</script>
+</body>
+</html>
