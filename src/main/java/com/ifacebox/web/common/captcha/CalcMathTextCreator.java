@@ -32,7 +32,7 @@ public class CalcMathTextCreator extends DefaultTextCreator {
         } else if (calc == CALC_SUBTRACTION) {
             //减法，交换位置不出现负数
             result = x >= y ? x - y : y - x;
-            text.append(x >= y ? CALC_MATH_NUMBER[x] : CALC_MATH_NUMBER[y]).append(CALC_SYMBOL[CALC_SUBTRACTION]).append(x >= y ? CALC_MATH_NUMBER[x] : CALC_MATH_NUMBER[y]);
+            text.append(x >= y ? CALC_MATH_NUMBER[x] : CALC_MATH_NUMBER[y]).append(CALC_SYMBOL[CALC_SUBTRACTION]).append(x >= y ? CALC_MATH_NUMBER[y] : CALC_MATH_NUMBER[x]);
         } else if (calc == CALC_MULTIPLICATION) {
             //乘法
             result = x * y;

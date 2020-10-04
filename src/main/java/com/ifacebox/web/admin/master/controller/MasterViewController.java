@@ -40,6 +40,9 @@ public class MasterViewController extends BaseViewController {
         response.setHeader("Pragma", "no-cache");
         response.setContentType("image/jpeg");
         String text = calcMathCaptcha.getProducer().createText();
+        if (logger.isInfoEnabled()) {
+            logger.info("验证码：{}", text);
+        }
         masterUserService.setCaptcha(request.getSession(true), calcMathCaptcha.parseResult(text));
         BufferedImage image = calcMathCaptcha.getProducer().createImage(calcMathCaptcha.parseText(text));
         ImageIO.write(image, "jpg", response.getOutputStream());
